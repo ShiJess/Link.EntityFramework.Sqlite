@@ -7,11 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6B057F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{8D49E9DA-F7A5-42AF-9EAF-3AF999B0F462}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Link.EntityFramework.Sqlite", "src\Link.EntityFramework.Sqlite\Link.EntityFramework.Sqlite.csproj", "{C63E248A-72C5-479E-B749-2E77203B424D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Link.EntityFramework.Sqlite.Test", "test\System.Data.SQLite.EF6.Migrations.Test\Link.EntityFramework.Sqlite.Test.csproj", "{B5A7CD34-89E4-48FB-9716-3F8F62F01217}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Link.EntityFramework.Sqlite_Standard", "src\Link.EntityFramework.Sqlite_Starndard\Link.EntityFramework.Sqlite_Standard.csproj", "{C71AF3BB-FEB3-4F0D-B71E-161D76D2AC92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Link.EntityFramework.Sqlite", "src\Link.EntityFramework.Sqlite\Link.EntityFramework.Sqlite.csproj", "{9E8737E9-79E7-4063-9691-85F784906866}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,18 +17,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C63E248A-72C5-479E-B749-2E77203B424D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C63E248A-72C5-479E-B749-2E77203B424D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C63E248A-72C5-479E-B749-2E77203B424D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C63E248A-72C5-479E-B749-2E77203B424D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B5A7CD34-89E4-48FB-9716-3F8F62F01217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B5A7CD34-89E4-48FB-9716-3F8F62F01217}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5A7CD34-89E4-48FB-9716-3F8F62F01217}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5A7CD34-89E4-48FB-9716-3F8F62F01217}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C71AF3BB-FEB3-4F0D-B71E-161D76D2AC92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C71AF3BB-FEB3-4F0D-B71E-161D76D2AC92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C71AF3BB-FEB3-4F0D-B71E-161D76D2AC92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C71AF3BB-FEB3-4F0D-B71E-161D76D2AC92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E8737E9-79E7-4063-9691-85F784906866}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E8737E9-79E7-4063-9691-85F784906866}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E8737E9-79E7-4063-9691-85F784906866}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E8737E9-79E7-4063-9691-85F784906866}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
