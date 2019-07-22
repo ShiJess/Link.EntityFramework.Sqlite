@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C242E496-71CD-4AF5-B5D2-AAD23965676D}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,9 +15,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6B057F
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.SQLite.EF6.Migrations", "System.Data.SQLite.EF6.Migrations\System.Data.SQLite.EF6.Migrations.csproj", "{6B715F5A-8F7D-427C-8873-216674B4B401}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{8D49E9DA-F7A5-42AF-9EAF-3AF999B0F462}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.SQLite.EF6.Migrations.Test", "System.Data.SQLite.EF6.Migrations.Test\System.Data.SQLite.EF6.Migrations.Test.csproj", "{B5A7CD34-89E4-48FB-9716-3F8F62F01217}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.SQLite.EF6.Migrations", "src\Link.EntityFramework.Sqlite\System.Data.SQLite.EF6.Migrations.csproj", "{6B715F5A-8F7D-427C-8873-216674B4B401}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.SQLite.EF6.Migrations.Test", "test\System.Data.SQLite.EF6.Migrations.Test\System.Data.SQLite.EF6.Migrations.Test.csproj", "{B5A7CD34-89E4-48FB-9716-3F8F62F01217}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +38,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B5A7CD34-89E4-48FB-9716-3F8F62F01217} = {8D49E9DA-F7A5-42AF-9EAF-3AF999B0F462}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B14470B4-C186-4204-90A5-916DEF0420FE}
 	EndGlobalSection
 EndGlobal
