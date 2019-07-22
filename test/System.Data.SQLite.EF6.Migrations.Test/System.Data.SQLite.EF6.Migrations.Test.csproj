@@ -76,9 +76,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Link.EntityFramework.Sqlite\System.Data.SQLite.EF6.Migrations.csproj">
+    <ProjectReference Include="..\..\src\Link.EntityFramework.Sqlite\Link.EntityFramework.Sqlite.csproj">
       <Project>{6b715f5a-8f7d-427c-8873-216674b4b401}</Project>
-      <Name>System.Data.SQLite.Migrations</Name>
+      <Name>Link.EntityFramework.Sqlite</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

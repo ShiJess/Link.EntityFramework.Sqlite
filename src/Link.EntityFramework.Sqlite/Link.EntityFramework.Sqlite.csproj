@@ -63,15 +63,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LiteralHelpers.cs" />
-    <Compile Include="MetadataHelpers.cs" />
+    <Compile Include="System.Data.SQLite.EF6.Migrations\LiteralHelpers.cs" />
+    <Compile Include="System.Data.SQLite.EF6.Migrations\MetadataHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SQLiteDdlBuilder.cs" />
-    <Compile Include="SQLiteDmlBuilder.cs" />
-    <Compile Include="SQLiteMigrationSqlGenerator.cs" />
-    <Compile Include="SQLiteProviderManifestHelper.cs" />
-    <Compile Include="SQLiteProviderServicesHelper.cs" />
-    <Compile Include="TypeUsageHelpers.cs" />
+    <Compile Include="System.Data.SQLite.EF6.Migrations\SQLiteDdlBuilder.cs" />
+    <Compile Include="System.Data.SQLite.EF6.Migrations\SQLiteDmlBuilder.cs" />
+    <Compile Include="System.Data.SQLite.EF6.Migrations\SQLiteMigrationSqlGenerator.cs" />
+    <Compile Include="System.Data.SQLite.EF6.Migrations\SQLiteProviderManifestHelper.cs" />
+    <Compile Include="System.Data.SQLite.EF6.Migrations\SQLiteProviderServicesHelper.cs" />
+    <Compile Include="System.Data.SQLite.EF6.Migrations\TypeUsageHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
