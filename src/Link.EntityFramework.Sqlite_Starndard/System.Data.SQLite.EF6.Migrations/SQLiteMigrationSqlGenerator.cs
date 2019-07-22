@@ -145,28 +145,12 @@ namespace System.Data.SQLite.EF6.Migrations
 
         private string GenerateSqlStatementConcrete(RenameColumnOperation migrationOperation)
         {
-            //throw new NotSupportedException("Cannot rename objects with Jet");
-            //ALTER TABLE tablename RENAME COLUMN Height1 TO Height;
-
-            SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
-
-            ddlBuilder.AppendSql("ALTER TABLE ");
-            ddlBuilder.AppendIdentifier(migrationOperation.Table);
-            ddlBuilder.AppendSql(" RENAME COLUMN ");
-
-            ddlBuilder.AppendIdentifier(migrationOperation.Name);
-            ddlBuilder.AppendSql(" TO ");
-            ddlBuilder.AppendIdentifier(migrationOperation.NewName);
-            ddlBuilder.AppendNewLine();
-
-            return ddlBuilder.GetCommandText();
+            throw new NotSupportedException("Cannot rename objects with Jet");
         }
 
         private string GenerateSqlStatementConcrete(RenameIndexOperation migrationOperation)
         {
-            //忽略重命名索引
-            return string.Empty;
-            //throw new NotSupportedException("Cannot rename objects with Jet");
+            throw new NotSupportedException("Cannot rename objects with Jet");
         }
 
         private string GenerateSqlStatementConcrete(RenameTableOperation migrationOperation)
@@ -197,9 +181,7 @@ namespace System.Data.SQLite.EF6.Migrations
             ddlBuilder.AppendIdentifier(column.Name);
             ddlBuilder.AppendSql(" ");
             TypeUsage storeType = ProviderManifest.GetStoreType(column.TypeUsage);
-            ddlBuilder.AppendType_Addcolumn(storeType, column.IsNullable ?? false, column.IsIdentity, column.DefaultValue ?? column.ClrDefaultValue);
-
-            //column.DefaultValue
+            ddlBuilder.AppendType(storeType, column.IsNullable ?? false, column.IsIdentity);
             ddlBuilder.AppendNewLine();
 
 
@@ -208,22 +190,7 @@ namespace System.Data.SQLite.EF6.Migrations
 
         private string GenerateSqlStatementConcrete(DropColumnOperation migrationOperation)
         {
-            //throw new NotSupportedException("Drop column not supported by SQLite");
-            //sqlite不支持删除列，故为避免后续操作，将删除的列名重命名
-            //后续可以考虑建立新表，迁移数据，删除旧表，重命名新表
-            SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
-
-            ddlBuilder.AppendSql("ALTER TABLE ");
-            ddlBuilder.AppendIdentifier(migrationOperation.Table);
-            ddlBuilder.AppendSql(" RENAME COLUMN ");
-
-            ddlBuilder.AppendIdentifier(migrationOperation.Name);
-            ddlBuilder.AppendSql(" TO ");
-            ddlBuilder.AppendIdentifier("Drop_" + migrationOperation.Name + "_" + DateTime.Now.ToString("yyyyMMddHHmmss"));
-            ddlBuilder.AppendNewLine();
-
-            return ddlBuilder.GetCommandText();
-
+            throw new NotSupportedException("Drop column not supported by SQLite");
         }
 
         private string GenerateSqlStatementConcrete(AlterColumnOperation migrationOperation)
@@ -356,39 +323,32 @@ namespace System.Data.SQLite.EF6.Migrations
 
         private string GenerateSqlStatementConcrete(DropForeignKeyOperation migrationOperation)
         {
-            return string.Empty;
-            //sqlite 不支持
-            //SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
-            //ddlBuilder.AppendSql("ALTER TABLE ");
-            //ddlBuilder.AppendIdentifier(migrationOperation.PrincipalTable);
-            //ddlBuilder.AppendSql(" DROP CONSTRAINT ");
-            //ddlBuilder.AppendIdentifier(migrationOperation.Name);
-            //ddlBuilder.AppendNewLine();
-            //return ddlBuilder.GetCommandText();
+            SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
+            ddlBuilder.AppendSql("ALTER TABLE ");
+            ddlBuilder.AppendIdentifier(migrationOperation.PrincipalTable);
+            ddlBuilder.AppendSql(" DROP CONSTRAINT ");
+            ddlBuilder.AppendIdentifier(migrationOperation.Name);
+            return ddlBuilder.GetCommandText();
 
         }
 
         private string GenerateSqlStatementConcrete(DropPrimaryKeyOperation migrationOperation)
         {
-            return string.Empty;
-            //sqlite 不支持
-            //SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
-            //ddlBuilder.AppendSql("ALTER TABLE ");
-            //ddlBuilder.AppendIdentifier(migrationOperation.Table);
-            //ddlBuilder.AppendSql(" DROP CONSTRAINT ");
-            //ddlBuilder.AppendIdentifier(migrationOperation.Name);
-            //ddlBuilder.AppendNewLine();
-            //return ddlBuilder.GetCommandText();
+            SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
+            ddlBuilder.AppendSql("ALTER TABLE ");
+            ddlBuilder.AppendIdentifier(migrationOperation.Table);
+            ddlBuilder.AppendSql(" DROP CONSTRAINT ");
+            ddlBuilder.AppendIdentifier(migrationOperation.Name);
+            return ddlBuilder.GetCommandText();
         }
 
         private string GenerateSqlStatementConcrete(DropIndexOperation migrationOperation)
         {
             SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
-            ddlBuilder.AppendSql("DROP INDEX if exists");
+            ddlBuilder.AppendSql("DROP INDEX ");
             ddlBuilder.AppendIdentifier(SQLiteProviderManifestHelper.GetFullIdentifierName(migrationOperation.Table, migrationOperation.Name));
-            //ddlBuilder.AppendSql(" ON ");
-            //ddlBuilder.AppendIdentifier(migrationOperation.Table);
-            ddlBuilder.AppendNewLine();
+            ddlBuilder.AppendSql(" ON ");
+            ddlBuilder.AppendIdentifier(migrationOperation.Table);
             return ddlBuilder.GetCommandText();
         }
 
@@ -397,7 +357,6 @@ namespace System.Data.SQLite.EF6.Migrations
             SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
             ddlBuilder.AppendSql("DROP TABLE ");
             ddlBuilder.AppendIdentifier(migrationOperation.Name);
-            ddlBuilder.AppendNewLine();
             return ddlBuilder.GetCommandText();
         }
 

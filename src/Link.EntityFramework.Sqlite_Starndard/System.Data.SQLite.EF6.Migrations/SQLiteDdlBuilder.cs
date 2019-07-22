@@ -97,52 +97,6 @@ namespace System.Data.SQLite.EF6.Migrations
                 AppendSql(" constraint primary key autoincrement");
         }
 
-        public void AppendType_Addcolumn(TypeUsage typeUsage, bool isNullable, bool isIdentity, object defaultvalue)
-        {
-
-            bool isTimestamp = false;
-
-            string sqliteTypeName = typeUsage.EdmType.Name;
-            string sqliteLength = "";
-
-
-            switch (sqliteTypeName)
-            {
-                case "decimal":
-                case "numeric":
-                    sqliteLength = string.Format(System.Globalization.CultureInfo.InvariantCulture, "({0}, {1})", typeUsage.GetPrecision(), typeUsage.GetScale());
-                    break;
-                case "binary":
-                case "varbinary":
-                case "varchar":
-                case "nvarchar":
-                case "char":
-                case "nchar":
-                    sqliteLength = string.Format("({0})", typeUsage.GetMaxLength());
-                    break;
-                default:
-                    break;
-            }
-
-            AppendSql(sqliteTypeName);
-            AppendSql(sqliteLength);
-
-            AppendSql(isNullable ? "" : " not null");
-            if (defaultvalue != null)
-            {
-                AppendSql(" DEFAULT ");
-                AppendSql("'" + defaultvalue + "'");
-            }
-            else if (isTimestamp)
-            {
-                // nothing to generate for identity
-            }
-            else if (isIdentity && sqliteTypeName == "guid")
-                AppendSql(" default GenGUID()");
-            else if (isIdentity)
-                AppendSql(" constraint primary key autoincrement");
-        }
-
         /// <summary>
         /// Appends raw SQL into the string builder.
         /// </summary>
