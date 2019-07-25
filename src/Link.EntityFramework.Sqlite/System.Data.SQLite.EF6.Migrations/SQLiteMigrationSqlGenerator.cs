@@ -197,7 +197,7 @@ namespace System.Data.SQLite.EF6.Migrations
             ddlBuilder.AppendIdentifier(column.Name);
             ddlBuilder.AppendSql(" ");
             TypeUsage storeType = ProviderManifest.GetStoreType(column.TypeUsage);
-            ddlBuilder.AppendType_Addcolumn(storeType, column.IsNullable ?? false, column.IsIdentity, column.DefaultValue ?? column.ClrDefaultValue);
+            ddlBuilder.AppendType_Addcolumn(storeType, column.IsNullable ?? true, column.IsIdentity, column.DefaultValue ?? column.ClrDefaultValue);
 
             //column.DefaultValue
             ddlBuilder.AppendNewLine();
@@ -312,7 +312,7 @@ namespace System.Data.SQLite.EF6.Migrations
                 else
                 {
                     TypeUsage storeTypeUsage = ProviderManifest.GetStoreType(column.TypeUsage);
-                    ddlBuilder.AppendType(storeTypeUsage, column.IsNullable ?? false, column.IsIdentity);
+                    ddlBuilder.AppendType(storeTypeUsage, column.IsNullable ?? true, column.IsIdentity);
                     ddlBuilder.AppendNewLine();
                 }
 
