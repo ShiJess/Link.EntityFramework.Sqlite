@@ -1,5 +1,6 @@
 
 # Link.EntityFramework.Sqlite
+# Entity Framework 6 Sqlite
 
 [![NuGet](https://img.shields.io/nuget/v/Link.EntityFramework.Sqlite.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/Link.EntityFramework.Sqlite/)
 
