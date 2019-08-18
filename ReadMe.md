@@ -50,3 +50,12 @@ _Example_
 * some other bug;
 
 
+## RoadMap
+
+* add test project - use xunit
+
+
+## Refrence
+
+* [EnfityFramework Core](https://github.com/aspnet/EntityFrameworkCore)
+* [EntityFramework](https://github.com/aspnet/EntityFramework6)
