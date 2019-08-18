@@ -228,7 +228,12 @@ namespace System.Data.SQLite.EF6.Migrations
 
         private string GenerateSqlStatementConcrete(AlterColumnOperation migrationOperation)
         {
-            throw new NotSupportedException("Alter column not supported by SQLite");
+            //todo 不支持修改列信息，故此处先删后加 —— 会丢失数据
+            DropColumnOperation dropColumnOperation = new DropColumnOperation(migrationOperation.Table, migrationOperation.Column.Name, migrationOperation.AnonymousArguments);
+            AddColumnOperation addColumnOperation = new AddColumnOperation(migrationOperation.Table, migrationOperation.Column, migrationOperation.AnonymousArguments);
+
+            return GenerateSqlStatementConcrete(dropColumnOperation) + GenerateSqlStatementConcrete(addColumnOperation);
+            //throw new NotSupportedException("Alter column not supported by SQLite");
         }
 
         #endregion
