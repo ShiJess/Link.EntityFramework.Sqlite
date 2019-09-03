@@ -53,7 +53,14 @@ _Example_
 ## RoadMap
 
 * add test project - use xunit
-
+* alter table process improve - e.g:delete column
+    * [Official Recommandition Process](https://sqlite.org/lang_altertable.html#otheralter) - All should in one transaction:
+    ```
+    1. Create new table
+    2. Copy data
+    3. Drop old table
+    4. Rename new into old
+    ```
 
 ## Refrence
 
