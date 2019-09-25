@@ -1,9 +1,14 @@
-﻿using System;
+﻿using Link.EntityFramework.Sqlite.Migrations.Record;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.Entity;
 using System.Data.Entity.Core.Common;
 using System.Data.Entity.Core.Common.CommandTrees;
 using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Infrastructure.Interception;
+using System.Data.Entity.Migrations;
 using System.Data.Entity.Migrations.Model;
 using System.Data.Entity.Migrations.Sql;
 using System.Diagnostics;
@@ -15,6 +20,10 @@ namespace System.Data.SQLite.EF6.Migrations
     /// </summary>
     public class SQLiteMigrationSqlGenerator : MigrationSqlGenerator
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        private string recordtablename = RecordContext.DefaultTableName;
 
         const string BATCHTERMINATOR = ";\r\n";
 
@@ -206,11 +215,11 @@ namespace System.Data.SQLite.EF6.Migrations
             return ddlBuilder.GetCommandText();
         }
 
+
         private string GenerateSqlStatementConcrete(DropColumnOperation migrationOperation)
         {
             //throw new NotSupportedException("Drop column not supported by SQLite");
-            //sqlite不支持删除列，故为避免后续操作，将删除的列名重命名
-            //后续可以考虑建立新表，迁移数据，删除旧表，重命名新表
+            //sqlite不支持删除列，故为避免后续操作，将删除的列名重命名           
             SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
 
             ddlBuilder.AppendSql("ALTER TABLE ");
@@ -219,20 +228,62 @@ namespace System.Data.SQLite.EF6.Migrations
 
             ddlBuilder.AppendIdentifier(migrationOperation.Name);
             ddlBuilder.AppendSql(" TO ");
-            ddlBuilder.AppendIdentifier("Drop_" + migrationOperation.Name + "_" + DateTime.Now.ToString("yyyyMMddHHmmss"));
+            string newdropname = "Drop_" + migrationOperation.Name + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            ddlBuilder.AppendIdentifier(newdropname);
+            ddlBuilder.AppendSql(";");
             ddlBuilder.AppendNewLine();
 
-            return ddlBuilder.GetCommandText();
 
+            //记录删除的列信息，以便后续的迁移操作
+            ddlBuilder.AppendSql($"CREATE TABLE IF NOT EXISTS {recordtablename} (ID INTEGER CONSTRAINT {ddlBuilder.CreateConstraintName("PK", recordtablename)} PRIMARY KEY AUTOINCREMENT,TableName TEXT,OldColumn TEXT,NewColumn Text); ");
+
+            ddlBuilder.AppendSql($" INSERT INTO {recordtablename}(TableName, OldColumn, NewColumn)");
+            ddlBuilder.AppendSql($" VALUES('{SQLiteProviderManifestHelper.RemoveDbo(migrationOperation.Table)}', '{migrationOperation.Name}', '{newdropname}');");
+
+            return ddlBuilder.GetCommandText();
         }
 
         private string GenerateSqlStatementConcrete(AlterColumnOperation migrationOperation)
         {
-            //todo 不支持修改列信息，故此处先删后加 —— 会丢失数据
-            DropColumnOperation dropColumnOperation = new DropColumnOperation(migrationOperation.Table, migrationOperation.Column.Name, migrationOperation.AnonymousArguments);
-            AddColumnOperation addColumnOperation = new AddColumnOperation(migrationOperation.Table, migrationOperation.Column, migrationOperation.AnonymousArguments);
+            //修改旧列列名
+            SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
 
-            return GenerateSqlStatementConcrete(dropColumnOperation) + GenerateSqlStatementConcrete(addColumnOperation);
+            ddlBuilder.AppendSql("ALTER TABLE ");
+            ddlBuilder.AppendIdentifier(migrationOperation.Table);
+            ddlBuilder.AppendSql(" RENAME COLUMN ");
+
+            ddlBuilder.AppendIdentifier(migrationOperation.Column.Name);
+            ddlBuilder.AppendSql(" TO ");
+            string newdropname = "Alter_" + migrationOperation.Column.Name + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            ddlBuilder.AppendIdentifier(newdropname);
+            ddlBuilder.AppendSql(";");
+            ddlBuilder.AppendNewLine();
+
+
+            //添加新数据结构的新列
+            ddlBuilder.AppendSql("ALTER TABLE ");
+            ddlBuilder.AppendIdentifier(migrationOperation.Table);
+            ddlBuilder.AppendSql(" ADD COLUMN ");
+
+            ColumnModel column = migrationOperation.Column;
+
+            ddlBuilder.AppendIdentifier(column.Name);
+            ddlBuilder.AppendSql(" ");
+            TypeUsage storeType = ProviderManifest.GetStoreType(column.TypeUsage);
+            ddlBuilder.AppendType_Addcolumn(storeType, column.IsNullable ?? true, column.IsIdentity, column.DefaultValue ?? column.ClrDefaultValue);
+
+            //column.DefaultValue
+            ddlBuilder.AppendSql(";");
+            ddlBuilder.AppendNewLine();
+
+            //记录修改的列信息，以便后续的迁移操作
+            ddlBuilder.AppendSql($"CREATE TABLE IF NOT EXISTS {recordtablename} (ID INTEGER CONSTRAINT {ddlBuilder.CreateConstraintName("PK", recordtablename)} PRIMARY KEY AUTOINCREMENT,TableName TEXT,OldColumn TEXT,NewColumn Text); ");
+
+            ddlBuilder.AppendSql($" INSERT INTO {recordtablename}(TableName, OldColumn, NewColumn)");
+            ddlBuilder.AppendSql($" VALUES('{SQLiteProviderManifestHelper.RemoveDbo(migrationOperation.Table)}', '{migrationOperation.Column.Name}', '{newdropname}');");
+
+            return ddlBuilder.GetCommandText();
+
             //throw new NotSupportedException("Alter column not supported by SQLite");
         }
 

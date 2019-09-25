@@ -1,15 +1,3 @@
-**Project Description**  
-Migrations for Entity Framework 6 SQLite provider  
-  
-**Limitations:**  
- - Relationships are not enforced with constraints  
- - There can be only one identity column per table and will be created as integer and primary key (other primary keys will be ignored)  
- - ...  
-  
-**How to use it**  
- - Download the library (using NuGet)  
- - Create a migration configuration  
- - Setup the migration configuration (usually during first context creation)  
   
 _Example_  
   
@@ -18,7 +6,8 @@ _Example_
     {
         static Context()
         {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<Context, ContextMigrationConfiguration>(true));
+            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<Context, ContextMigrationConfiguration>(true));
+            Database.SetInitializer(new MigrateDatabaseToLatestVersionSqliteExt<Context, ContextMigrationConfiguration>(true));
         }
 
         // DbSets
