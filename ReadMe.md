@@ -58,7 +58,7 @@ class Context : DbContext
 {
     static Context()
     {
-        Database.SetInitializer(new MigrateDatabaseToLatestVersionSqliteExt<Context, ContextMigrationConfiguration>(true));
+        Database.SetInitializer(new MigrateDatabaseToLatestVersionExtention<Context, ContextMigrationConfiguration>(true));
     }
 
     // DbSets

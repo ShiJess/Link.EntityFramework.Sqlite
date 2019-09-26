@@ -3,18 +3,21 @@
   <PropertyGroup>
     <RootNamespace>Link.EntityFramework.Sqlite</RootNamespace>
     <TargetFrameworks>net45;net40</TargetFrameworks>
-    <Description>Entity framework 6.x migration provider for SQLite</Description>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <FileVersion>0.0.0.2</FileVersion>
+    <Description>Entity framework 6.x migration provider for SQLite
+
+* Support Drop Column</Description>
+    <AssemblyVersion>0.1.0.2</AssemblyVersion>
+    <FileVersion>0.1.0.2</FileVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <Version>0.0.2-beta</Version>
+    <Version>0.1.0</Version>
     <PackageProjectUrl>https://github.com/ShiJess/Link.EntityFramework.Sqlite</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ShiJess/Link.EntityFramework.Sqlite</RepositoryUrl>
     <PackageTags>EntityFramework,Migration,SQLite</PackageTags>
     <Authors>Jess</Authors>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <PackageReleaseNotes />
   </PropertyGroup>
 
   <!--<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">

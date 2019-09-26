@@ -13,11 +13,12 @@ using System.Threading.Tasks;
 namespace Link.EntityFramework.Sqlite
 {
     /// <summary>
-    /// 
+    /// Migrate Database To LatestVersion Extention
+    /// * Sqlite Support Drop Column
     /// </summary>
     /// <typeparam name="TContext"></typeparam>
     /// <typeparam name="TMigrationsConfiguration"></typeparam>
-    public class MigrateDatabaseToLatestVersionSqliteExt<TContext, TMigrationsConfiguration> : MigrateDatabaseToLatestVersion<TContext, TMigrationsConfiguration>
+    public class MigrateDatabaseToLatestVersionExtention<TContext, TMigrationsConfiguration> : MigrateDatabaseToLatestVersion<TContext, TMigrationsConfiguration>
           where TContext : DbContext
           where TMigrationsConfiguration : DbMigrationsConfiguration<TContext>, new()
     {
@@ -26,7 +27,7 @@ namespace Link.EntityFramework.Sqlite
         /// 
         /// </summary>
         /// <param name="useSuppliedContext"></param>
-        public MigrateDatabaseToLatestVersionSqliteExt(bool useSuppliedContext) : base(useSuppliedContext)
+        public MigrateDatabaseToLatestVersionExtention(bool useSuppliedContext) : base(useSuppliedContext)
         {
 
         }
@@ -38,11 +39,10 @@ namespace Link.EntityFramework.Sqlite
         /// <param name="context"></param>
         public override void InitializeDatabase(TContext context)
         {
-            if (context != null)
+            if (context != null && context.Database != null && context.Database.Connection is SQLiteConnection)
             {
                 string recordtablename = RecordContext.DefaultTableName;
 
-                //todo add modify drop alter column temp record table
                 bool needclose = false;
                 var connection = context.Database.Connection;
 
@@ -51,7 +51,7 @@ namespace Link.EntityFramework.Sqlite
                     needclose = true;
                     connection.Open();
                 }
-                           
+
                 var createrecordtable = $"CREATE TABLE IF NOT EXISTS {recordtablename}(ID INTEGER CONSTRAINT PK_A_{DateTime.Now.Ticks} PRIMARY KEY AUTOINCREMENT,TableName TEXT,OldColumn TEXT,NewColumn Text); ";
                 var createcommand = connection.CreateCommand();
                 createcommand.CommandText = createrecordtable;
@@ -69,8 +69,7 @@ namespace Link.EntityFramework.Sqlite
                 }
 
                 base.InitializeDatabase(context);
-
-                //todo extention: modify drop column and alter column & remove temp record table;
+                               
                 if (connection.State == System.Data.ConnectionState.Closed)
                 {
                     needclose = true;

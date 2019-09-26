@@ -13,13 +13,13 @@ namespace Link.EntityFramework.Sqlite.Test.DataModel
         public TestContext(string connectionStr) : base(connectionStr)
         {
             //Database.SetInitializer(new MigrateDatabaseToLatestVersion<TestContext, MigrationConfiguration>(true));
-            Database.SetInitializer(new MigrateDatabaseToLatestVersionSqliteExt<TestContext, MigrationConfiguration>(true));
+            Database.SetInitializer(new MigrateDatabaseToLatestVersionExtention<TestContext, MigrationConfiguration>(true));
         }
 
         public TestContext(DbConnection existingConnection, bool contextOwnsConnection) : base(existingConnection, contextOwnsConnection)
         {
             //Database.SetInitializer(new MigrateDatabaseToLatestVersion<TestContext, MigrationConfiguration>(true));
-            Database.SetInitializer(new MigrateDatabaseToLatestVersionSqliteExt<TestContext, MigrationConfiguration>(true));
+            Database.SetInitializer(new MigrateDatabaseToLatestVersionExtention<TestContext, MigrationConfiguration>(true));
         }
 
         public virtual DbSet<A> ASet { get; set; }

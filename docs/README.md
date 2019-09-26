@@ -7,7 +7,7 @@ _Example_
         static Context()
         {
             //Database.SetInitializer(new MigrateDatabaseToLatestVersion<Context, ContextMigrationConfiguration>(true));
-            Database.SetInitializer(new MigrateDatabaseToLatestVersionSqliteExt<Context, ContextMigrationConfiguration>(true));
+            Database.SetInitializer(new MigrateDatabaseToLatestVersionExtention<Context, ContextMigrationConfiguration>(true));
         }
 
         // DbSets
