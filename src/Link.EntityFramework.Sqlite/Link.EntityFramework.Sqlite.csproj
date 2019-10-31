@@ -2,22 +2,22 @@
 
   <PropertyGroup>
     <RootNamespace>Link.EntityFramework.Sqlite</RootNamespace>
-    <TargetFrameworks>net45;net40</TargetFrameworks>
-    <Description>Entity framework 6.x migration provider for SQLite
+    <TargetFrameworks>net45;net40;netcoreapp3.0</TargetFrameworks>
+    <Description>Entity framework 6.3 migration provider for SQLite
 
 * Support Drop Column</Description>
-    <AssemblyVersion>0.1.0.2</AssemblyVersion>
-    <FileVersion>0.1.0.2</FileVersion>
+    <AssemblyVersion>0.2.0.2</AssemblyVersion>
+    <FileVersion>0.2.0.2</FileVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <Version>0.1.0</Version>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>0.2.0.2</Version>
     <PackageProjectUrl>https://github.com/ShiJess/Link.EntityFramework.Sqlite</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ShiJess/Link.EntityFramework.Sqlite</RepositoryUrl>
     <PackageTags>EntityFramework,Migration,SQLite</PackageTags>
     <Authors>Jess</Authors>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <PackageReleaseNotes />
+    <PackageReleaseNotes>change ef version 6.2=&gt;6.3</PackageReleaseNotes>
     <PackageIconUrl>https://upload.wikimedia.org/wikipedia/commons/9/97/Sqlite-square-icon.svg</PackageIconUrl>
   </PropertyGroup>
 
@@ -28,19 +28,27 @@
   <ItemGroup>
     <None Remove="App.config" />
     <None Remove="packages.config" />
-    <None Include="..\..\LICENSE.txt">
+    <None Include="..\..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.2.0" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.111" />
-    <PackageReference Include="System.Data.SQLite.EF6" Version="1.0.111" />
+    <PackageReference Include="EntityFramework" Version="6.3.0" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" />
+    <PackageReference Include="System.Data.SQLite.EF6" Version="1.0.112" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0' ">
+    <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
+  </ItemGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Configuration" />
   </ItemGroup>
