@@ -85,3 +85,4 @@ class Context : DbContext
 * [Sqlite AlterTable:Official Recommandition Process](https://sqlite.org/lang_altertable.html#otheralter)
 * [EntityFramework 6](https://github.com/aspnet/EntityFramework6)
 * [EnfityFramework Core](https://github.com/aspnet/EntityFrameworkCore)
+* [Sqlite Logo](https://en.wikipedia.org/wiki/File:Sqlite-square-icon.svg)

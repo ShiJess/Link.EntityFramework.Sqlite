@@ -18,6 +18,7 @@
     <Authors>Jess</Authors>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <PackageReleaseNotes />
+    <PackageIconUrl>https://upload.wikimedia.org/wikipedia/commons/9/97/Sqlite-square-icon.svg</PackageIconUrl>
   </PropertyGroup>
 
   <!--<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
