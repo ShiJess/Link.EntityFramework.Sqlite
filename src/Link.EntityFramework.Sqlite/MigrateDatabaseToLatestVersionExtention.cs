@@ -95,6 +95,8 @@ namespace Link.EntityFramework.Sqlite
 
                     foreach (DataRow record in dt_Record.Rows)
                     {
+                        //todo 删除存在的同名表
+                        //var dropandrename = $"DROP TABLE {record["TableName"].ToString()};";
                         var createsql = from c in dt_TableInfo.Rows.Cast<DataRow>().ToList() where c["name"].ToString() == record["TableName"].ToString() select c["sql"];
 
                         if (createsql != null && createsql.Count() > 0)
