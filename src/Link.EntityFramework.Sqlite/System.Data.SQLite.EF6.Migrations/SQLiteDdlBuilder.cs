@@ -120,6 +120,24 @@ namespace System.Data.SQLite.EF6.Migrations
                 case "nchar":
                     sqliteLength = string.Format("({0})", typeUsage.GetMaxLength());
                     break;
+                case "bit":
+                    //bool类型，将默认值修改为0和1，如果是True/False System.Data.Sqlite会读取错误
+                    {
+                        if (defaultvalue != null)
+                        {
+                            switch (defaultvalue.ToString())
+                            {
+                                case "True":
+                                    defaultvalue = 1;
+                                    break;
+                                case "False":
+                                default:
+                                    defaultvalue = 0;
+                                    break;
+                            }
+                        }
+                    }
+                    break;
                 default:
                     break;
             }

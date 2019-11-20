@@ -1,14 +1,9 @@
 ﻿using Link.EntityFramework.Sqlite.Migrations.Record;
-using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Data.Entity;
 using System.Data.Entity.Core.Common;
 using System.Data.Entity.Core.Common.CommandTrees;
 using System.Data.Entity.Core.Metadata.Edm;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Infrastructure.Interception;
-using System.Data.Entity.Migrations;
 using System.Data.Entity.Migrations.Model;
 using System.Data.Entity.Migrations.Sql;
 using System.Diagnostics;
@@ -24,14 +19,19 @@ namespace System.Data.SQLite.EF6.Migrations
         /// 
         /// </summary>
         private string recordtablename = RecordContext.DefaultTableName;
+        /// <summary>
+        /// 表示是否使用扩展的自动迁移类
+        /// </summary>
+        private bool UseExtentionMigration = true;
 
         const string BATCHTERMINATOR = ";\r\n";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteMigrationSqlGenerator"/> class.
         /// </summary>
-        public SQLiteMigrationSqlGenerator()
+        public SQLiteMigrationSqlGenerator(bool useExtentionMigration = true)
         {
+            UseExtentionMigration = useExtentionMigration;
             base.ProviderManifest = ((DbProviderServices)(new SQLiteProviderFactory()).GetService(typeof(DbProviderServices))).GetProviderManifest("");
         }
 
@@ -233,13 +233,14 @@ namespace System.Data.SQLite.EF6.Migrations
             ddlBuilder.AppendSql(";");
             ddlBuilder.AppendNewLine();
 
+            if (UseExtentionMigration)
+            {
+                //记录删除的列信息，以便后续的迁移操作
+                ddlBuilder.AppendSql($"CREATE TABLE IF NOT EXISTS {recordtablename} (ID INTEGER CONSTRAINT {ddlBuilder.CreateConstraintName("PK", recordtablename)} PRIMARY KEY AUTOINCREMENT,TableName TEXT,OldColumn TEXT,NewColumn Text); ");
 
-            //记录删除的列信息，以便后续的迁移操作
-            ddlBuilder.AppendSql($"CREATE TABLE IF NOT EXISTS {recordtablename} (ID INTEGER CONSTRAINT {ddlBuilder.CreateConstraintName("PK", recordtablename)} PRIMARY KEY AUTOINCREMENT,TableName TEXT,OldColumn TEXT,NewColumn Text); ");
-
-            ddlBuilder.AppendSql($" INSERT INTO {recordtablename}(TableName, OldColumn, NewColumn)");
-            ddlBuilder.AppendSql($" VALUES('{SQLiteProviderManifestHelper.RemoveDbo(migrationOperation.Table)}', '{migrationOperation.Name}', '{newdropname}');");
-
+                ddlBuilder.AppendSql($" INSERT INTO {recordtablename}(TableName, OldColumn, NewColumn)");
+                ddlBuilder.AppendSql($" VALUES('{SQLiteProviderManifestHelper.RemoveDbo(migrationOperation.Table)}', '{migrationOperation.Name}', '{newdropname}');");
+            }
             return ddlBuilder.GetCommandText();
         }
 
@@ -276,12 +277,14 @@ namespace System.Data.SQLite.EF6.Migrations
             ddlBuilder.AppendSql(";");
             ddlBuilder.AppendNewLine();
 
-            //记录修改的列信息，以便后续的迁移操作
-            ddlBuilder.AppendSql($"CREATE TABLE IF NOT EXISTS {recordtablename} (ID INTEGER CONSTRAINT {ddlBuilder.CreateConstraintName("PK", recordtablename)} PRIMARY KEY AUTOINCREMENT,TableName TEXT,OldColumn TEXT,NewColumn Text); ");
+            if (UseExtentionMigration)
+            {
+                //记录修改的列信息，以便后续的迁移操作
+                ddlBuilder.AppendSql($"CREATE TABLE IF NOT EXISTS {recordtablename} (ID INTEGER CONSTRAINT {ddlBuilder.CreateConstraintName("PK", recordtablename)} PRIMARY KEY AUTOINCREMENT,TableName TEXT,OldColumn TEXT,NewColumn Text); ");
 
-            ddlBuilder.AppendSql($" INSERT INTO {recordtablename}(TableName, OldColumn, NewColumn)");
-            ddlBuilder.AppendSql($" VALUES('{SQLiteProviderManifestHelper.RemoveDbo(migrationOperation.Table)}', '{migrationOperation.Column.Name}', '{newdropname}');");
-
+                ddlBuilder.AppendSql($" INSERT INTO {recordtablename}(TableName, OldColumn, NewColumn)");
+                ddlBuilder.AppendSql($" VALUES('{SQLiteProviderManifestHelper.RemoveDbo(migrationOperation.Table)}', '{migrationOperation.Column.Name}', '{newdropname}');");
+            }
             return ddlBuilder.GetCommandText();
 
             //throw new NotSupportedException("Alter column not supported by SQLite");
@@ -421,7 +424,6 @@ namespace System.Data.SQLite.EF6.Migrations
             //ddlBuilder.AppendIdentifier(migrationOperation.Name);
             //ddlBuilder.AppendNewLine();
             //return ddlBuilder.GetCommandText();
-
         }
 
         private string GenerateSqlStatementConcrete(DropPrimaryKeyOperation migrationOperation)

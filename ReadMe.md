@@ -16,6 +16,7 @@ Migrations for Entity Framework 6 SQLite provider
  - Relationships are not enforced with constraints  
  - There can be only one identity column per table and will be created as integer and primary key (other primary keys will be ignored)  
  - ...  
+ - can not change primary key column
   
 ## Simplest Usage
 
@@ -71,7 +72,7 @@ class Context : DbContext
 
 ## Implementation
 
-* Delete Column Imp
+* Drop Column Imp
     * Rename Column
     * Record Delete Column Info
     * Add Additional Migration
@@ -79,6 +80,9 @@ class Context : DbContext
         * Copy Data To Temp Table
         * Drop Original Table
         * Rename Temp Table
+* Alter Column Imp
+  * Similar Drop Column
+  * Alter Column Will Migrate Data Column By Column
 
 ## Refrence
 
@@ -86,3 +90,9 @@ class Context : DbContext
 * [EntityFramework 6](https://github.com/aspnet/EntityFramework6)
 * [EnfityFramework Core](https://github.com/aspnet/EntityFrameworkCore)
 * [Sqlite Logo](https://en.wikipedia.org/wiki/File:Sqlite-square-icon.svg)
+
+
+## About SQLite
+
+* Boolean need set default 0/1, not True/False - add column
+  * System.Data.Sqlite cast error for True/False - GetBoolean

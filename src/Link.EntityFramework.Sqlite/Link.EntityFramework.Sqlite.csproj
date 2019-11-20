@@ -2,37 +2,34 @@
 
   <PropertyGroup>
     <RootNamespace>Link.EntityFramework.Sqlite</RootNamespace>
-    <TargetFrameworks>net45;net40;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>net45;net40;netcoreapp3.0;netstandard2.1</TargetFrameworks>
     <Description>Entity framework 6.3 migration provider for SQLite
 
-* Support Drop Column</Description>
-    <AssemblyVersion>0.2.0.2</AssemblyVersion>
-    <FileVersion>0.2.0.2</FileVersion>
+* Support Drop Column
+* Support Alter Column</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>0.2.0.2</Version>
+    <PackageLicenseFile></PackageLicenseFile>
+    <Version>0.2.1</Version>
     <PackageProjectUrl>https://github.com/ShiJess/Link.EntityFramework.Sqlite</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ShiJess/Link.EntityFramework.Sqlite</RepositoryUrl>
     <PackageTags>EntityFramework,Migration,SQLite</PackageTags>
     <Authors>Jess</Authors>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <PackageReleaseNotes>change ef version 6.2=&gt;6.3</PackageReleaseNotes>
+    <PackageReleaseNotes>fix add bool column default value error;
+add Alter Column support;</PackageReleaseNotes>
     <PackageIconUrl>https://upload.wikimedia.org/wikipedia/commons/9/97/Sqlite-square-icon.svg</PackageIconUrl>
+    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
   </PropertyGroup>
 
   <!--<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>-->
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <None Remove="App.config" />
     <None Remove="packages.config" />
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.3.0" />
@@ -40,9 +37,9 @@
     <PackageReference Include="System.Data.SQLite.EF6" Version="1.0.112" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0' ">
+  <!--<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
-  </ItemGroup>
+  </ItemGroup>-->
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
     <Reference Include="Microsoft.CSharp" />
@@ -53,9 +50,9 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Folder Include="Properties\" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <!--<ItemGroup Condition="'$(TargetFramework)' == 'net45'">
     <PackageReference Include="Microsoft.CSharp">

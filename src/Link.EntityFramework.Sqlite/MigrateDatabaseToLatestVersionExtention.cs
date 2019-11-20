@@ -1,4 +1,5 @@
-﻿using Link.EntityFramework.Sqlite.Migrations.Record;
+﻿using Link.EntityFramework.Sqlite.Migrations;
+using Link.EntityFramework.Sqlite.Migrations.Record;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,6 +16,7 @@ namespace Link.EntityFramework.Sqlite
     /// <summary>
     /// Migrate Database To LatestVersion Extention
     /// * Sqlite Support Drop Column
+    /// * Sqlite Support Alter Column
     /// </summary>
     /// <typeparam name="TContext"></typeparam>
     /// <typeparam name="TMigrationsConfiguration"></typeparam>
@@ -22,14 +24,20 @@ namespace Link.EntityFramework.Sqlite
           where TContext : DbContext
           where TMigrationsConfiguration : DbMigrationsConfiguration<TContext>, new()
     {
+        /// <summary>
+        /// 清理旧版本迁移导致的残留内容
+        /// e.g. Drop_ColumnName_yyyyMMddHHmmSS
+        /// </summary>
+        private bool ClearOldVersionMigration { get; set; } = false;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="useSuppliedContext"></param>
-        public MigrateDatabaseToLatestVersionExtention(bool useSuppliedContext) : base(useSuppliedContext)
+        /// <param name="clearOldVersion"></param>
+        public MigrateDatabaseToLatestVersionExtention(bool useSuppliedContext, bool clearOldVersion = false) : base(useSuppliedContext)
         {
-
+            ClearOldVersionMigration = clearOldVersion;
         }
 
 
@@ -69,7 +77,7 @@ namespace Link.EntityFramework.Sqlite
                 }
 
                 base.InitializeDatabase(context);
-                               
+
                 if (connection.State == System.Data.ConnectionState.Closed)
                 {
                     needclose = true;
@@ -85,107 +93,63 @@ namespace Link.EntityFramework.Sqlite
 
                 if (dt_Record != null && dt_Record.Rows.Count > 0)
                 {
-                    //pragma table_info('A_New')
-                    var createtablesql = "select name,sql from sqlite_master where type='table'";
-                    var createtablecommand = connection.CreateCommand();
-                    createtablecommand.CommandText = createtablesql;
-                    SQLiteDataAdapter sqlDataAdapter2 = new SQLiteDataAdapter(createtablecommand as SQLiteCommand);
-                    DataTable dt_TableInfo = new DataTable();
-                    sqlDataAdapter2.Fill(dt_TableInfo);
-
+                    List<RecordInfo> recordinfos = new List<RecordInfo>();
                     foreach (DataRow record in dt_Record.Rows)
                     {
-                        //todo 删除存在的同名表
-                        //var dropandrename = $"DROP TABLE {record["TableName"].ToString()};";
-                        var createsql = from c in dt_TableInfo.Rows.Cast<DataRow>().ToList() where c["name"].ToString() == record["TableName"].ToString() select c["sql"];
-
-                        if (createsql != null && createsql.Count() > 0)
+                        recordinfos.Add(new RecordInfo
                         {
-                            var sql = createsql.First().ToString();
-                            var tableindex = sql.IndexOf("\"" + record["TableName"].ToString() + "\"");
-                            var index = sql.IndexOf("\"" + record["NewColumn"].ToString() + "\"");
-                            var preindex = sql.Substring(0, index + 1).LastIndexOf(',');
-                            var nextindex = sql.IndexOf(',', index);
-                            if (nextindex == -1)//最后一个字段
-                            {
-                                nextindex = sql.LastIndexOf(')');
-                            }
-                            var targetsql = sql.Substring(0, tableindex) + "\"Temp_" + sql.Substring(tableindex + 1, preindex - (tableindex + 1)) + sql.Substring(nextindex, sql.Length - nextindex);
-                            //创建临时存储表
-                            var createtemptablecommand = connection.CreateCommand();
-                            createtemptablecommand.CommandText = targetsql;
-                            createtemptablecommand.ExecuteNonQuery();
+                            //ID=record["ID"]?.ToString(),
+                            TableName = record["TableName"]?.ToString(),
+                            OldColumn = record["OldColumn"]?.ToString(),
+                            NewColumn = record["NewColumn"]?.ToString()
+                        });
+                    }
+                    var migraTables = recordinfos.GroupBy(p => p.TableName);
+                    foreach (var table in migraTables)
+                    {
+                        var tableinfo = $"pragma table_info('{table.Key}')";
+                        var tableinfocommand = connection.CreateCommand();
+                        tableinfocommand.CommandText = tableinfo;
+                        SQLiteDataAdapter sqlDataAdapter4 = new SQLiteDataAdapter(tableinfocommand as SQLiteCommand);
+                        DataTable dt_TableInfo1 = new DataTable();
+                        sqlDataAdapter4.Fill(dt_TableInfo1);
+                        List<string> tablecolumn = (from c in dt_TableInfo1.Rows.Cast<DataRow>() select c["name"]?.ToString()).ToList();
 
-                            var newtable = $"select * from Temp_{record["TableName"].ToString()}";
-                            var newtablecommand = connection.CreateCommand();
-                            newtablecommand.CommandText = newtable;
-                            SQLiteDataAdapter sqlDataAdapter3 = new SQLiteDataAdapter(newtablecommand as SQLiteCommand);
-                            DataTable dt_NewTable = new DataTable();
-                            sqlDataAdapter3.Fill(dt_NewTable);
-
-                            string columns = "";
-                            string targetcolumns = "";
-                            foreach (DataColumn newcolumn in dt_NewTable.Columns)
-                            {
-                                columns += newcolumn.ColumnName;
-                                columns += ",";
-                                if (record["OldColumn"].ToString() == newcolumn.ColumnName)
-                                {
-                                    targetcolumns += record["NewColumn"].ToString() + " as " + newcolumn.ColumnName;
-                                }
-                                else
-                                {
-                                    targetcolumns += newcolumn.ColumnName;
-                                }
-                                targetcolumns += ",";
-                            }
-                            columns = columns.Trim(',');
-                            targetcolumns = targetcolumns.Trim(',');
-
-                            //迁移数据
-                            var copydatasql = $"INSERT INTO Temp_{record["TableName"].ToString()} ({columns}) SELECT {targetcolumns} FROM {record["TableName"].ToString()}; ";
-                            var copydatacommand = connection.CreateCommand();
-                            copydatacommand.CommandText = copydatasql;
-                            copydatacommand.ExecuteNonQuery();
-
-                            //drop old & rename new
-                            var dropandrename = $"DROP TABLE {record["TableName"].ToString()};";
-                            dropandrename += $"ALTER TABLE Temp_{record["TableName"].ToString()} RENAME TO {record["TableName"].ToString()};";
-                            var dropandrenamecommand = connection.CreateCommand();
-                            dropandrenamecommand.CommandText = dropandrename;
-                            dropandrenamecommand.ExecuteNonQuery();
+                        List<string> dropcolumns = (from c in table
+                                                    where !tablecolumn.Contains(c.OldColumn)
+                                                    select c.NewColumn).ToList();
+                        Dictionary<string, string> altercolumns = (from c in table
+                                                                   where tablecolumn.Contains(c.OldColumn)
+                                                                   select c).ToDictionary(p => p.OldColumn, p => p.NewColumn);
+                        //删除列处理
+                        if (ClearOldVersionMigration)
+                        {
+                            Regex regex = new Regex(@"Drop_\w*_[0-9]{14}");
+                            var droplist = from c in tablecolumn
+                                           where regex.IsMatch(c)
+                                           select c;
+                            dropcolumns = dropcolumns.Union(droplist).ToList();
+                        }
+                        DataMigrationHelper.DropColumn(connection, table.Key, dropcolumns);
+                        //修改列处理
+                        DataMigrationHelper.AlterColumn(connection, table.Key, altercolumns);
+                        if (ClearOldVersionMigration)
+                        {
+                            //清理旧版列更改数据
+                            Regex regex = new Regex(@"Alter_\w*_[0-9]{14}");
+                            var alterlist = from c in tablecolumn
+                                            where regex.IsMatch(c)
+                                            select c;
+                            List<string> dropaltercolumns = alterlist.Except(altercolumns.Values).ToList();
+                            DataMigrationHelper.DropColumn(connection, table.Key, dropaltercolumns);
                         }
                     }
-
-                    //Regex regex = new Regex("");
-                    ////todo 优化，提供删除旧版Drop_Column_yyyyMMddHHmmSS列支持
-                    //foreach (DataRow table in dt_TableInfo.Rows)
-                    //{
-                    //    var tableinfo = $"pragma table_info('{table["name"]}')";
-                    //    var tableinfocommand = connection.CreateCommand();
-                    //    tableinfocommand.CommandText = tableinfo;
-                    //    SQLiteDataAdapter sqlDataAdapter4 = new SQLiteDataAdapter(tableinfocommand as SQLiteCommand);
-                    //    DataTable dt_TableInfo1 = new DataTable();
-                    //    sqlDataAdapter4.Fill(dt_TableInfo1);
-
-                    //    foreach (DataRow oldcolumn in dt_TableInfo1.Rows)
-                    //    {
-
-                    //        //匹配Drop_Column_
-                    //        if (regex.IsMatch(oldcolumn["name"].ToString()))
-                    //        {
-
-                    //        }
-                    //    }
-                    //}
-
                 }
 
-                //若记录信息清空
+                //记录信息清空
                 var clearcommand1 = connection.CreateCommand();
                 clearcommand1.CommandText = $"DELETE FROM {recordtablename};";
                 clearcommand1.ExecuteNonQuery();
-
 
                 var droprecordtable = $"DROP TABLE IF EXISTS {recordtablename};";
                 var dropcommand = connection.CreateCommand();
