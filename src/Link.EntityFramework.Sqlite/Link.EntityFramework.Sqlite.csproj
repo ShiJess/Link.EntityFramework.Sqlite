@@ -10,15 +10,15 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageLicenseFile></PackageLicenseFile>
-    <Version>0.2.1</Version>
+    <Version>0.2.2</Version>
     <PackageProjectUrl>https://github.com/ShiJess/Link.EntityFramework.Sqlite</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ShiJess/Link.EntityFramework.Sqlite</RepositoryUrl>
     <PackageTags>EntityFramework,Migration,SQLite</PackageTags>
     <Authors>Jess</Authors>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <PackageReleaseNotes>fix add bool column default value error;
-add Alter Column support;</PackageReleaseNotes>
+    <PackageReleaseNotes>simplify usage</PackageReleaseNotes>
     <PackageIconUrl>https://upload.wikimedia.org/wikipedia/commons/9/97/Sqlite-square-icon.svg</PackageIconUrl>
+    <!--<PackageIcon></PackageIcon>-->
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
   </PropertyGroup>
 

@@ -31,7 +31,6 @@ internal sealed class ContextMigrationConfiguration : DbMigrationsConfiguration<
     {
         AutomaticMigrationsEnabled = true;
         AutomaticMigrationDataLossAllowed = true;
-        SetSqlGenerator("System.Data.SQLite", new SQLiteMigrationSqlGenerator());
     }
 }
 ```

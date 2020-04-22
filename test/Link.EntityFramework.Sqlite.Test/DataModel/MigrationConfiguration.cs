@@ -15,7 +15,7 @@ namespace Link.EntityFramework.Sqlite.Test.DataModel
             AutomaticMigrationsEnabled = true;
             AutomaticMigrationDataLossAllowed = true;
 
-            SetSqlGenerator("System.Data.SQLite", new SQLiteMigrationSqlGenerator()); 
+            //SetSqlGenerator("System.Data.SQLite", new SQLiteMigrationSqlGenerator()); 
         }
     }
 }

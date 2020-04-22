@@ -4,8 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Core.Common;
 using System.Data.Entity.Migrations;
+using System.Data.Entity.Sqlite.Utilities;
 using System.Data.SQLite;
+using System.Data.SQLite.EF6;
+using System.Data.SQLite.EF6.Migrations;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -35,9 +39,25 @@ namespace Link.EntityFramework.Sqlite
         /// </summary>
         /// <param name="useSuppliedContext"></param>
         /// <param name="clearOldVersion"></param>
-        public MigrateDatabaseToLatestVersionExtention(bool useSuppliedContext, bool clearOldVersion = false) : base(useSuppliedContext)
+        public MigrateDatabaseToLatestVersionExtention(bool useSuppliedContext, bool clearOldVersion = false)
+            : this(useSuppliedContext, new TMigrationsConfiguration(), clearOldVersion)
         {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="useSuppliedContext"></param>
+        /// <param name="configuration"></param>
+        /// <param name="clearOldVersion"></param>
+        public MigrateDatabaseToLatestVersionExtention(bool useSuppliedContext, TMigrationsConfiguration configuration, bool clearOldVersion = false)
+            : base(useSuppliedContext, configuration)
+        {
+            Check.NotNull(configuration, "configuration");
+
             ClearOldVersionMigration = clearOldVersion;
+            configuration.SetSqlGenerator("System.Data.SQLite", new SQLiteMigrationSqlGenerator());
         }
 
 

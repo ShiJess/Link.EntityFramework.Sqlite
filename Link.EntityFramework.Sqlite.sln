@@ -11,6 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Link.EntityFramework.Sqlite
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Link.EntityFramework.Sqlite.Test", "test\Link.EntityFramework.Sqlite.Test\Link.EntityFramework.Sqlite.Test.csproj", "{9A362AA5-5CFD-4D30-8F90-845105B5BDFD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{3AC55B2A-FFDA-427F-A662-1519BFAB83D9}"
+	ProjectSection(SolutionItems) = preProject
+		docs\README.md = docs\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
