@@ -29,7 +29,7 @@ namespace System.Data.SQLite.EF6.Migrations
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteMigrationSqlGenerator"/> class.
         /// </summary>
-        public SQLiteMigrationSqlGenerator(bool useExtentionMigration = true)
+        public SQLiteMigrationSqlGenerator(bool useExtentionMigration = false)
         {
             UseExtentionMigration = useExtentionMigration;
             base.ProviderManifest = ((DbProviderServices)(new SQLiteProviderFactory()).GetService(typeof(DbProviderServices))).GetProviderManifest("");
@@ -246,39 +246,47 @@ namespace System.Data.SQLite.EF6.Migrations
 
         private string GenerateSqlStatementConcrete(AlterColumnOperation migrationOperation)
         {
+            //不支持修改主键列[忽略修改主键列]
+            if (migrationOperation.Column.IsIdentity)
+            {
+                return string.Empty;
+            }
+
             //修改旧列列名
             SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
 
-            ddlBuilder.AppendSql("ALTER TABLE ");
-            ddlBuilder.AppendIdentifier(migrationOperation.Table);
-            ddlBuilder.AppendSql(" RENAME COLUMN ");
-
-            ddlBuilder.AppendIdentifier(migrationOperation.Column.Name);
-            ddlBuilder.AppendSql(" TO ");
-            string newdropname = "Alter_" + migrationOperation.Column.Name + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
-            ddlBuilder.AppendIdentifier(newdropname);
-            ddlBuilder.AppendSql(";");
-            ddlBuilder.AppendNewLine();
-
-
-            //添加新数据结构的新列
-            ddlBuilder.AppendSql("ALTER TABLE ");
-            ddlBuilder.AppendIdentifier(migrationOperation.Table);
-            ddlBuilder.AppendSql(" ADD COLUMN ");
-
-            ColumnModel column = migrationOperation.Column;
-
-            ddlBuilder.AppendIdentifier(column.Name);
-            ddlBuilder.AppendSql(" ");
-            TypeUsage storeType = ProviderManifest.GetStoreType(column.TypeUsage);
-            ddlBuilder.AppendType_Addcolumn(storeType, column.IsNullable ?? true, column.IsIdentity, column.DefaultValue ?? column.ClrDefaultValue);
-
-            //column.DefaultValue
-            ddlBuilder.AppendSql(";");
-            ddlBuilder.AppendNewLine();
-
             if (UseExtentionMigration)
             {
+                //alter table tablename rename column oldname to newname;
+                ddlBuilder.AppendSql("ALTER TABLE ");
+                ddlBuilder.AppendIdentifier(migrationOperation.Table);
+                ddlBuilder.AppendSql(" RENAME COLUMN ");
+
+                ddlBuilder.AppendIdentifier(migrationOperation.Column.Name);
+                ddlBuilder.AppendSql(" TO ");
+                string newdropname = "Alter_" + migrationOperation.Column.Name + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                ddlBuilder.AppendIdentifier(newdropname);
+                ddlBuilder.AppendSql(";");
+                ddlBuilder.AppendNewLine();
+
+
+                //添加新数据结构的新列
+                ddlBuilder.AppendSql("ALTER TABLE ");
+                ddlBuilder.AppendIdentifier(migrationOperation.Table);
+                ddlBuilder.AppendSql(" ADD COLUMN ");
+
+                ColumnModel column = migrationOperation.Column;
+
+                ddlBuilder.AppendIdentifier(column.Name);
+                ddlBuilder.AppendSql(" ");
+                TypeUsage storeType = ProviderManifest.GetStoreType(column.TypeUsage);
+                ddlBuilder.AppendType_Addcolumn(storeType, column.IsNullable ?? true, column.IsIdentity, column.DefaultValue ?? column.ClrDefaultValue);
+
+                //column.DefaultValue
+                ddlBuilder.AppendSql(";");
+                ddlBuilder.AppendNewLine();
+
+
                 //记录修改的列信息，以便后续的迁移操作
                 ddlBuilder.AppendSql($"CREATE TABLE IF NOT EXISTS {recordtablename} (ID INTEGER CONSTRAINT {ddlBuilder.CreateConstraintName("PK", recordtablename)} PRIMARY KEY AUTOINCREMENT,TableName TEXT,OldColumn TEXT,NewColumn Text); ");
 
@@ -316,12 +324,14 @@ namespace System.Data.SQLite.EF6.Migrations
         private string GenerateSqlStatementConcrete(AddPrimaryKeyOperation migrationOperation)
         {
             // Actually primary key creation is supported only during table creation
+            //暂不支持添加主键
+            //SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
+            //ddlBuilder.AppendSql(" PRIMARY KEY (");
+            //ddlBuilder.AppendIdentifierList(migrationOperation.Columns);
+            //ddlBuilder.AppendSql(")");
+            //return ddlBuilder.GetCommandText();
 
-            SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
-            ddlBuilder.AppendSql(" PRIMARY KEY (");
-            ddlBuilder.AppendIdentifierList(migrationOperation.Columns);
-            ddlBuilder.AppendSql(")");
-            return ddlBuilder.GetCommandText();
+            return string.Empty;
         }
 
         #endregion

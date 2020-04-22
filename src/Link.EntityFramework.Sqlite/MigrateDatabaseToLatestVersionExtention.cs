@@ -4,16 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Core.Common;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Sqlite.Utilities;
 using System.Data.SQLite;
-using System.Data.SQLite.EF6;
 using System.Data.SQLite.EF6.Migrations;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Link.EntityFramework.Sqlite
 {
@@ -29,7 +25,7 @@ namespace Link.EntityFramework.Sqlite
           where TMigrationsConfiguration : DbMigrationsConfiguration<TContext>, new()
     {
         /// <summary>
-        /// 清理旧版本迁移导致的残留内容
+        /// 清理旧版本迁移[or 迁移失败]导致的残留内容
         /// e.g. Drop_ColumnName_yyyyMMddHHmmSS
         /// </summary>
         private bool ClearOldVersionMigration { get; set; } = false;
@@ -57,7 +53,7 @@ namespace Link.EntityFramework.Sqlite
             Check.NotNull(configuration, "configuration");
 
             ClearOldVersionMigration = clearOldVersion;
-            configuration.SetSqlGenerator("System.Data.SQLite", new SQLiteMigrationSqlGenerator());
+            configuration.SetSqlGenerator("System.Data.SQLite", new SQLiteMigrationSqlGenerator(true));
         }
 
 
