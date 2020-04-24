@@ -27,8 +27,10 @@ namespace Link.EntityFramework.Sqlite.Migrations
                 //无对应表
                 return;
             }
+            createsql = createsql.Replace('[', '"').Replace(']', '"');//某些情况下语句中的表名、列名以[]框选
 
             var tableindex = createsql.IndexOf($"\"{targetTableName}\"");//create 前半段语句
+
             foreach (var columnName in dropColumnList)
             {
                 var index = createsql.IndexOf($"\"{columnName}\"");//待删除字段起始位置

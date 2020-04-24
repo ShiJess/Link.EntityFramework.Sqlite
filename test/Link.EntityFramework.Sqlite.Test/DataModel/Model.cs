@@ -49,6 +49,23 @@ namespace Link.EntityFramework.Sqlite.Test.DataModel
 
         public bool TestBool { get; set; }
 
+
+        //public string aaa { get; set; }
+
+        //public string aaa { get; set; }
+
+    }
+
+
+    [Table("Bbb")]
+    internal class Bbb
+    {
+        [Key]
+        public string ID { get; set; } = Guid.NewGuid().ToString();
+
+        //public string aa { get; set; }
+
+        //public string Ba { get; set; }
     }
 
 }

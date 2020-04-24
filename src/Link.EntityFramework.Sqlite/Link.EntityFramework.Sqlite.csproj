@@ -3,25 +3,21 @@
   <PropertyGroup>
     <RootNamespace>Link.EntityFramework.Sqlite</RootNamespace>
     <TargetFrameworks>net45;net40;netcoreapp3.0;netstandard2.1</TargetFrameworks>
-    <Description>
-      Entity framework 6.3 migration provider for SQLite
-
+    <Description>Entity framework 6.3 migration provider for SQLite
       * Support Drop Column
       * Support Alter Column
-    </Description>
+</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageLicenseFile></PackageLicenseFile>
-    <Version>0.2.2.1</Version>
+    <Version>0.2.2.2</Version>
     <PackageProjectUrl>https://github.com/ShiJess/Link.EntityFramework.Sqlite</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ShiJess/Link.EntityFramework.Sqlite</RepositoryUrl>
     <PackageTags>EntityFramework,Migration,SQLite</PackageTags>
     <Authors>Jess</Authors>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <PackageReleaseNotes>
-      simplify usage;
-      fix primary change bug;
-    </PackageReleaseNotes>
+    <PackageReleaseNotes>fix auto generate db bug;
+fix dropcolumn bug about  [] in createsql;</PackageReleaseNotes>
     <PackageIconUrl>https://upload.wikimedia.org/wikipedia/commons/9/97/Sqlite-square-icon.svg</PackageIconUrl>
     <!--<PackageIcon></PackageIcon>-->
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>

@@ -65,12 +65,15 @@ namespace Link.EntityFramework.Sqlite.Test
         {
             Database.SetInitializer(new MigrateDatabaseToLatestVersionExtention<TestContext, MigrationConfiguration>(true, true));
 
-            TestContext testContext = new TestContext("Data Source=Test.db;");
-            var model = testContext.Set<A>().ToList();
-            outputHelper.WriteLine(model.Count().ToString());
-            foreach (var item in model)
+            using (TestContext testContext = new TestContext("Data Source=Test.db;"))
             {
-                outputHelper.WriteLine(item.Name ?? "");
+                var model1 = testContext.Set<Bbb>().ToList();
+                var model = testContext.Set<A>().ToList();
+                //outputHelper.WriteLine(model.Count().ToString());
+                //foreach (var item in model)
+                //{
+                //    outputHelper.WriteLine(item.Name ?? "");
+                //}
             }
         }
     }

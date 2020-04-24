@@ -321,15 +321,37 @@ namespace System.Data.SQLite.EF6.Migrations
 
         #region Primary keys creation
 
-        private string GenerateSqlStatementConcrete(AddPrimaryKeyOperation migrationOperation)
+        //private string GenerateSqlStatementConcrete(AddPrimaryKeyOperation migrationOperation)
+        //{
+        //    // Actually primary key creation is supported only during table creation
+        //    //暂不支持添加主键
+        //    SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
+        //    ddlBuilder.AppendSql(" PRIMARY KEY (");
+        //    ddlBuilder.AppendIdentifierList(migrationOperation.Columns);
+        //    ddlBuilder.AppendSql(")");
+        //    return ddlBuilder.GetCommandText();
+
+        //    return string.Empty;
+        //}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="migrationOperation"></param>
+        /// <param name="isCreate">标识是否正在创建表</param>
+        /// <returns></returns>
+        private string GenerateSqlStatementConcrete(AddPrimaryKeyOperation migrationOperation, bool isCreate = false)
         {
-            // Actually primary key creation is supported only during table creation
-            //暂不支持添加主键
-            //SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
-            //ddlBuilder.AppendSql(" PRIMARY KEY (");
-            //ddlBuilder.AppendIdentifierList(migrationOperation.Columns);
-            //ddlBuilder.AppendSql(")");
-            //return ddlBuilder.GetCommandText();
+            if (isCreate)
+            {
+                // Actually primary key creation is supported only during table creation
+                //暂不支持添加主键
+                SQLiteDdlBuilder ddlBuilder = new SQLiteDdlBuilder();
+                ddlBuilder.AppendSql(" PRIMARY KEY (");
+                ddlBuilder.AppendIdentifierList(migrationOperation.Columns);
+                ddlBuilder.AppendSql(")");
+                return ddlBuilder.GetCommandText();
+            }
 
             return string.Empty;
         }
@@ -390,7 +412,7 @@ namespace System.Data.SQLite.EF6.Migrations
             if (migrationOperation.PrimaryKey != null && autoincrementColumnName == null)
             {
                 ddlBuilder.AppendSql(",");
-                ddlBuilder.AppendSql(GenerateSqlStatementConcrete(migrationOperation.PrimaryKey));
+                ddlBuilder.AppendSql(GenerateSqlStatementConcrete(migrationOperation.PrimaryKey, true));
             }
 
             ddlBuilder.AppendSql(")");
