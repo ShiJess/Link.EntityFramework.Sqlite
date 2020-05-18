@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Sqlite.Utilities;
 using System.Data.SQLite;
@@ -162,6 +164,39 @@ namespace Link.EntityFramework.Sqlite
                     }
                 }
 
+                //当标记清理历史版本迁移信息时，过滤一遍所有context下的表，删除所有残留多余字段
+                if (ClearOldVersionMigration)
+                {
+                    var entities = (context as IObjectContextAdapter).ObjectContext.MetadataWorkspace.GetItems<EntityContainer>(DataSpace.SSpace);
+                    foreach (var item in entities)
+                    {
+                        foreach (var subitem in item.EntitySets)
+                        {
+                            var tablename = subitem.Table;
+
+                            var tableinfo = $"pragma table_info('{tablename}')";
+                            var tableinfocommand = connection.CreateCommand();
+                            tableinfocommand.CommandText = tableinfo;
+                            SQLiteDataAdapter sqlDataAdapter4 = new SQLiteDataAdapter(tableinfocommand as SQLiteCommand);
+                            DataTable dt_TableInfo1 = new DataTable();
+                            sqlDataAdapter4.Fill(dt_TableInfo1);
+                            List<string> tablecolumn = (from c in dt_TableInfo1.Rows.Cast<DataRow>() select c["name"]?.ToString()).ToList();
+
+                            Regex regex = new Regex(@"Drop_\w*_[0-9]{14}");
+                            Regex regex1 = new Regex(@"Alter_\w*_[0-9]{14}");
+                            var droplist = (from c in tablecolumn
+                                            where regex.IsMatch(c) || regex1.IsMatch(c)
+                                            select c).ToList();
+
+                            if (droplist.Count() > 0)
+                            {
+                                //todo 迁移数据
+                                //DataMigrationHelper.DropColumn(connection, tablename, droplist);
+                            }
+                        }
+                    }
+                }
+
                 //记录信息清空
                 var clearcommand1 = connection.CreateCommand();
                 clearcommand1.CommandText = $"DELETE FROM {recordtablename};";
@@ -177,6 +212,8 @@ namespace Link.EntityFramework.Sqlite
                     connection.Close();
                     needclose = false;
                 }
+
+                //todo 非空字段的数据中，空数据设置默认值
 
             }
             else { base.InitializeDatabase(context); }

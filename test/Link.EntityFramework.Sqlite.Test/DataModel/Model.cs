@@ -58,7 +58,7 @@ namespace Link.EntityFramework.Sqlite.Test.DataModel
 
 
     [Table("Bbb")]
-    internal class Bbb
+    internal class Bbb1
     {
         [Key]
         public string ID { get; set; } = Guid.NewGuid().ToString();

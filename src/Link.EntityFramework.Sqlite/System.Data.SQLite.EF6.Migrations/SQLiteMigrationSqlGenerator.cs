@@ -213,6 +213,8 @@ namespace System.Data.SQLite.EF6.Migrations
 
 
             return ddlBuilder.GetCommandText();
+
+            //todo 加字段后，将非空的新增字段设置默认值
         }
 
 

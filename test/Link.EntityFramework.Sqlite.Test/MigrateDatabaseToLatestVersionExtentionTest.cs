@@ -67,7 +67,7 @@ namespace Link.EntityFramework.Sqlite.Test
 
             using (TestContext testContext = new TestContext("Data Source=Test.db;"))
             {
-                var model1 = testContext.Set<Bbb>().ToList();
+                var model1 = testContext.Set<Bbb1>().ToList();
                 var model = testContext.Set<A>().ToList();
                 //outputHelper.WriteLine(model.Count().ToString());
                 //foreach (var item in model)

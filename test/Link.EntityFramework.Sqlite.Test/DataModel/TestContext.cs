@@ -20,7 +20,7 @@ namespace Link.EntityFramework.Sqlite.Test.DataModel
 
         public virtual DbSet<A> ASet { get; set; }
 
-        public virtual DbSet<Bbb> BbbSet { get; set; }
+        public virtual DbSet<Bbb1> BbbSet { get; set; }
 
     }
 }
